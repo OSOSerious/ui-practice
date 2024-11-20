@@ -16,15 +16,19 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    emptyOutDir: true,
     assetsDir: 'assets',
     sourcemap: true,
     rollupOptions: {
       output: {
         manualChunks: {
-          react: ['react', 'react-dom'],
-          router: ['react-router-dom'],
-          charts: ['recharts'],
-          motion: ['framer-motion'],
+          vendor: [
+            'react',
+            'react-dom',
+            'react-router-dom',
+            'framer-motion',
+            'recharts'
+          ],
         },
       },
     },
