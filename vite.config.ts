@@ -8,7 +8,9 @@ export default defineConfig({
   server: {
     port: 5174,
   },
-  optimizeDeps: {
-    exclude: ['lucide-react'],
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: true,
   },
 });
