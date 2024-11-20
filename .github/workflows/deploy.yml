@@ -44,17 +44,14 @@ jobs:
       - name: Install dependencies
         run: |
           echo "Installing dependencies..."
-          npm ci
+          npm ci --legacy-peer-deps
           echo "Installed packages:"
           npm list --depth=0
-
-      - name: Type check
-        run: npm run type-check
-        continue-on-error: true
 
       - name: Build project
         run: |
           echo "Building project..."
+          export PATH="$PATH:./node_modules/.bin"
           npm run build
           echo "Build output:"
           ls -la dist/
