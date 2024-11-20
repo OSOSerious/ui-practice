@@ -6,6 +6,7 @@ A modern, interactive educational platform powered by AI to provide personalized
 ![React](https://img.shields.io/badge/React-18.3.1-61dafb)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Latest-blue)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38bdf8)
+![Vite](https://img.shields.io/badge/Vite-Latest-646CFF)
 
 ## ✨ Features
 
@@ -14,12 +15,14 @@ A modern, interactive educational platform powered by AI to provide personalized
 - Personalized learning paths
 - Intelligent progress tracking
 - Adaptive difficulty levels
+- Interactive chat interface with file sharing capabilities
 
 ### 💻 Interactive Learning Experience
 - Live coding environments
 - Real-time code execution
 - Syntax highlighting
 - Error detection and suggestions
+- Minimizable chat interface for better workspace management
 
 ### 📚 Comprehensive Curriculum
 - Structured learning paths
@@ -34,25 +37,28 @@ A modern, interactive educational platform powered by AI to provide personalized
 - Performance analytics
 
 ### 💬 Community Features
-- AI chat support
+- Advanced AI chat support with context awareness
 - Progress sharing
 - Achievement showcase
 - Learning statistics
+- File upload and code snippet sharing
 
 ## 🛠️ Tech Stack
 
-- **Frontend Framework**: React 18.3.1
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Icons**: Lucide React
+- **Frontend Framework**: React with TypeScript
 - **Build Tool**: Vite
-- **Development Server**: Port 5174
+- **Styling**: Tailwind CSS
+- **State Management**: React Context
+- **Routing**: React Router with HashRouter
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **Deployment**: GitHub Pages
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
+- Node.js (v18 or higher)
+- npm
 
 ### Installation
 
@@ -76,61 +82,69 @@ npm install
 npm run dev
 ```
 
-5. Open your browser and visit `http://localhost:5174`
+5. Build for production
+```bash
+npm run build
+```
+
+6. Preview production build
+```bash
+npm run preview
+```
+
+The application is deployed at: https://ososerious.github.io/ai-tutor/
 
 ## 📁 Project Structure
 
 ```
 ai-tutor/
 ├── src/
-│   ├── components/         # Reusable UI components
-│   ├── pages/             # Main page components
-│   ├── data/              # Static data and configurations
+│   ├── components/
+│   │   ├── chat/          # Chat interface components
+│   │   ├── layout/        # Layout components (Header, Sidebar)
+│   │   ├── dashboard/     # Dashboard components
+│   │   ├── profile/       # User profile components
+│   │   ├── courses/       # Course-related components
+│   │   ├── achievements/  # Achievement system components
+│   │   ├── playground/    # Code playground components
+│   │   └── settings/      # Settings components
+│   ├── contexts/          # React contexts for state management
+│   ├── services/          # API and service integrations
 │   ├── types/             # TypeScript type definitions
-│   ├── styles/            # Global styles
-│   └── utils/             # Helper functions
+│   ├── styles/            # Global styles and Tailwind config
+│   └── utils/             # Helper functions and utilities
 ├── public/                # Static assets
-└── config/                # Configuration files
+└── .github/
+    └── workflows/         # GitHub Actions deployment config
 ```
 
-## 🎯 Key Components
+## 🔑 Key Features
 
-- **Interactive Code Editor**: Live coding environment with real-time feedback
-- **AI Chat Interface**: Intelligent tutoring system
-- **Progress Tracking**: Visual progress indicators and statistics
-- **Achievement System**: Gamified learning experience
-- **Lesson Navigation**: Intuitive content organization
+- **Intelligent Chat Interface**: 
+  - Real-time AI responses
+  - File upload support
+  - Code snippet sharing
+  - Minimizable chat window
+  - Typing indicators
+  - Message history tracking
 
-## 🔧 Configuration
+- **State Management**:
+  - Centralized chat context
+  - Global state handling
+  - Persistent message history
+  - Real-time status updates
 
-The platform can be configured through `config.json`:
-- Server port
-- API endpoints
-- Theme settings
-- Feature toggles
+- **User Experience**:
+  - Responsive design
+  - Smooth animations
+  - Intuitive navigation
+  - Modern UI components
+  - Interactive feedback
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📄 License
+## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- React Team for the amazing framework
-- Tailwind CSS for the utility-first CSS framework
-- The open-source community for continuous inspiration
-
-## 📞 Support
-
-
-
----
-
-
+This project is licensed under the MIT License - see the LICENSE file for details.

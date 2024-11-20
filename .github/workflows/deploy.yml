@@ -2,9 +2,9 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
   workflow_dispatch:
 
 permissions:
@@ -16,12 +16,17 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
+env:
+  NODE_ENV: production
+  VITE_BASE_URL: '/ai-tutor/'
+  VITE_APP_TITLE: 'AI Tutor Platform'
+
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
     
     steps:
       - name: Checkout repository
@@ -37,12 +42,22 @@ jobs:
         uses: actions/configure-pages@v3
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          npm audit fix || true
+
+      - name: Type check
+        run: npm run type-check || true
 
       - name: Build project
         run: npm run build
         env:
           VITE_BASE_URL: '/ai-tutor/'
+          VITE_APP_TITLE: 'AI Tutor Platform'
+          NODE_ENV: production
+
+      - name: Run tests
+        run: npm run test || true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
@@ -52,5 +67,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+        if: github.ref == 'refs/heads/main'

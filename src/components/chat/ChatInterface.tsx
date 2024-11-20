@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Paperclip, Image, Code, HelpCircle, Bot, User, Loader } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useChat } from '../../contexts/ChatContext';
+import { ChatService } from '../../services/chatService';
 
 interface Message {
   id: number;
@@ -13,26 +15,10 @@ interface Message {
 }
 
 const ChatInterface: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      content: "Hello! I'm your AI tutor. How can I help you today? I can assist you with:",
-      isAI: true,
-      timestamp: new Date(),
-      type: 'text',
-    },
-    {
-      id: 2,
-      content: "• Learning AI concepts\n• Debugging code\n• Explaining complex topics\n• Providing examples",
-      isAI: true,
-      timestamp: new Date(),
-      type: 'text',
-    },
-  ]);
+  const { messages, isTyping, addMessage, setTyping } = useChat();
   const [input, setInput] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -45,62 +31,29 @@ const ChatInterface: React.FC = () => {
   const handleSend = async () => {
     if (!input.trim() && !selectedFile) return;
 
-    const userMessage: Message = {
-      id: messages.length + 1,
-      content: input,
-      isAI: false,
-      timestamp: new Date(),
-      status: 'sending',
-      type: 'text',
-    };
-
-    setMessages(prev => [...prev, userMessage]);
+    // Add user message
+    addMessage(input, false);
     setInput('');
     setSelectedFile(null);
-    setIsTyping(true);
-
-    // Simulate AI response
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const aiMessage: Message = {
-        id: messages.length + 2,
-        content: generateAIResponse(input),
-        isAI: true,
-        timestamp: new Date(),
-        type: input.includes('code') ? 'code' : 'text',
-        codeLanguage: input.includes('python') ? 'python' : 'javascript',
-      };
-
-      setMessages(prev => [
-        ...prev.map(m => m.id === userMessage.id ? { ...m, status: 'sent' } : m),
-        aiMessage,
-      ]);
-    } catch (error) {
-      setMessages(prev => 
-        prev.map(m => m.id === userMessage.id ? { ...m, status: 'error' } : m)
-      );
-    } finally {
-      setIsTyping(false);
-    }
-  };
-
-  const generateAIResponse = (userInput: string): string => {
-    if (userInput.toLowerCase().includes('code')) {
-      return `Here's an example code snippet:
-
-def calculate_accuracy(predictions, actual):
-    correct = sum(1 for p, a in zip(predictions, actual) if p == a)
-    return correct / len(predictions) * 100
-
-# Example usage
-predictions = [1, 0, 1, 1, 0]
-actual = [1, 0, 1, 0, 0]
-accuracy = calculate_accuracy(predictions, actual)
-print(f"Model accuracy: {accuracy}%")`;
-    }
     
-    return "I understand your question about " + userInput + ". Let me help you with that...";
+    try {
+      setTyping(true);
+      
+      // Handle file upload if present
+      if (selectedFile) {
+        const fileUrl = await ChatService.uploadFile(selectedFile);
+        addMessage(`File uploaded: ${fileUrl}`, false);
+      }
+
+      // Get AI response
+      const aiResponse = await ChatService.sendMessage(input);
+      addMessage(aiResponse.content, true);
+    } catch (error) {
+      console.error('Error in chat:', error);
+      addMessage('Sorry, I encountered an error. Please try again.', true);
+    } finally {
+      setTyping(false);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,6 +61,10 @@ print(f"Model accuracy: {accuracy}%")`;
     if (file) {
       setSelectedFile(file);
     }
+  };
+
+  const handleCodeSnippet = () => {
+    setInput(prev => prev + '\n```python\n# Your code here\n```');
   };
 
   return (
@@ -221,7 +178,10 @@ print(f"Model accuracy: {accuracy}%")`;
             <button className="p-2 hover:bg-gray-100 rounded-full">
               <Image className="h-5 w-5 text-gray-500" />
             </button>
-            <button className="p-2 hover:bg-gray-100 rounded-full">
+            <button 
+              className="p-2 hover:bg-gray-100 rounded-full"
+              onClick={handleCodeSnippet}
+            >
               <Code className="h-5 w-5 text-gray-500" />
             </button>
           </div>
