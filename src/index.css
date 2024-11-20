@@ -46,3 +46,22 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-400;
 }
+
+/* Flashcard styles */
+.perspective {
+  perspective: 1000px;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Code playground styles */
+.font-mono {
+  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
