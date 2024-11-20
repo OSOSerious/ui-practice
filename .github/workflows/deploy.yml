@@ -3,6 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ master ]
+  pull_request:
+    branches: [ master ]
   workflow_dispatch:
 
 permissions:
@@ -33,19 +35,33 @@ jobs:
           node-version: 18
           cache: 'npm'
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          echo "Node version: $(node -v)"
+          echo "NPM version: $(npm -v)"
+
+      - name: Type check
+        run: npm run type-check || true
 
       - name: Build project
-        run: npm run build
+        run: |
+          npm run build
+          cp dist/index.html dist/404.html
+
+      - name: List build output
+        run: ls -la dist/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: dist
 
   deploy:
-    name: Deploy to GitHub Pages
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: build
     runs-on: ubuntu-latest
     environment:
