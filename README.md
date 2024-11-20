@@ -1,5 +1,7 @@
 # 🎓 AI Tutor Platform
 
+[![Deploy to GitHub Pages](https://github.com/OSOSerious/ai-tutor/actions/workflows/deploy.yml/badge.svg)](https://github.com/OSOSerious/ai-tutor/actions/workflows/deploy.yml)
+
 A modern, interactive educational platform powered by AI to provide personalized learning experiences in technology and artificial intelligence.
 
 ![AI Tutor Platform](https://img.shields.io/badge/Platform-AI%20Learning-blue)
