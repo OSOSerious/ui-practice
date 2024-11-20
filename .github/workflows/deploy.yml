@@ -1,30 +1,25 @@
 name: Deploy to GitHub Pages
 
 on:
-  # Trigger deployment on pushes to master branch
   push:
     branches: [ master ]
-  # Allow running this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: true
 
 env:
   NODE_ENV: production
-  VITE_BASE_URL: '/ai-tutor/'
-  VITE_APP_TITLE: 'AI Tutor Platform'
+  VITE_BASE_URL: '/ui-practice/'
+  VITE_APP_TITLE: 'UI Practice'
 
 jobs:
-  # Build job
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -35,33 +30,20 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: 18
           cache: 'npm'
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
       - name: Install dependencies
-        run: |
-          echo "Installing dependencies..."
-          npm ci --legacy-peer-deps
-          echo "Installed packages:"
-          npm list --depth=0
+        run: npm ci
 
       - name: Build project
-        run: |
-          echo "Building project..."
-          export PATH="$PATH:./node_modules/.bin"
-          npm run build
-          echo "Build output:"
-          ls -la dist/
+        run: npm run build
 
-      - name: Upload artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: ./dist
 
-  # Deploy job
   deploy:
     name: Deploy to GitHub Pages
     needs: build
