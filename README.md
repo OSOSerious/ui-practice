@@ -133,4 +133,4 @@ For support, email support@aitutor.com or join our Slack channel.
 
 ---
 
-Made with ❤️ by OSOSerious
+Made with ️ by OSOSerious
