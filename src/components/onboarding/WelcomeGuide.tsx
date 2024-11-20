@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Book, Brain, Star, Award, ArrowRight } from 'lucide-react';
 
+interface WelcomeGuideProps {
+  onComplete: () => void;
+}
+
 interface Step {
   title: string;
   description: string;
@@ -8,7 +12,7 @@ interface Step {
   color: string;
 }
 
-const WelcomeGuide: React.FC = () => {
+const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ onComplete }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const steps: Step[] = [
@@ -37,6 +41,14 @@ const WelcomeGuide: React.FC = () => {
       color: 'bg-green-100 text-green-600',
     },
   ];
+
+  const handleNext = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(prev => prev + 1);
+    } else {
+      onComplete();
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -74,13 +86,7 @@ const WelcomeGuide: React.FC = () => {
                 </button>
               )}
               <button
-                onClick={() => {
-                  if (currentStep < steps.length - 1) {
-                    setCurrentStep(prev => prev + 1);
-                  } else {
-                    // Handle completion
-                  }
-                }}
+                onClick={handleNext}
                 className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
                 {currentStep === steps.length - 1 ? 'Get Started' : 'Next'}

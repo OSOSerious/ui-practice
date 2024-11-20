@@ -116,7 +116,7 @@ print(output)`;
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <WelcomeGuide />
+            <WelcomeGuide onComplete={() => setShowWelcome(false)} />
           </motion.div>
         )}
       </AnimatePresence>
