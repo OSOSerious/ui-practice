@@ -2,9 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [ master, main ]
   workflow_dispatch:
 
 permissions:
@@ -16,57 +14,40 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
-env:
-  NODE_ENV: production
-  VITE_BASE_URL: '/ui-practice/'
-  VITE_APP_TITLE: 'UI Practice'
-
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '18'
           cache: 'npm'
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
       - name: Install dependencies
-        run: |
-          npm ci
-          echo "Node version: $(node -v)"
-          echo "NPM version: $(npm -v)"
+        run: npm ci
 
-      - name: Type check
-        run: npm run type-check || true
+      - name: Build
+        run: npm run build
 
-      - name: Build project
-        run: |
-          npm run build
-          cp dist/index.html dist/404.html
-
-      - name: List build output
-        run: ls -la dist/
-
-      - name: Upload Pages artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
   deploy:
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    needs: build
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
