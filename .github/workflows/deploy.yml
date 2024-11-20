@@ -2,13 +2,14 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ main ]
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
+  deployments: write
 
 concurrency:
   group: "pages"
@@ -17,6 +18,10 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,6 +39,9 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          NODE_ENV: production
+          VITE_BASE_URL: '/ui-practice/'
         run: npm run build
 
       - name: Upload artifact
@@ -41,14 +49,8 @@ jobs:
         with:
           path: dist
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    needs: build
-    runs-on: ubuntu-latest
-    name: Deploy
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
