@@ -15,7 +15,7 @@ import { Bell, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 function App() {
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
   const [notifications, setNotifications] = useState([
     { id: 1, message: 'New AI course available!', time: '5m ago' },
