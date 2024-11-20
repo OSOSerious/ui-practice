@@ -1,35 +1,53 @@
 import React from 'react';
-import { Home, Book, Trophy, MessageSquare, Settings } from 'lucide-react';
+import { NavLink, useLocation } from 'react-router-dom';
+import {
+  Home,
+  BookOpen,
+  Award,
+  Code,
+  Settings,
+  User,
+  Layout,
+} from 'lucide-react';
 
 const Sidebar: React.FC = () => {
-  const menuItems = [
-    { icon: Home, label: 'Dashboard', active: true },
-    { icon: Book, label: 'Courses' },
-    { icon: Trophy, label: 'Achievements' },
-    { icon: MessageSquare, label: 'Chat' },
-    { icon: Settings, label: 'Settings' },
+  const location = useLocation();
+
+  const navItems = [
+    { path: '/', icon: <Home className="w-5 h-5" />, label: 'Dashboard' },
+    { path: '/courses', icon: <BookOpen className="w-5 h-5" />, label: 'Courses' },
+    { path: '/achievements', icon: <Award className="w-5 h-5" />, label: 'Achievements' },
+    { path: '/playground', icon: <Code className="w-5 h-5" />, label: 'Code Playground' },
+    { path: '/profile', icon: <User className="w-5 h-5" />, label: 'Profile' },
+    { path: '/settings', icon: <Settings className="w-5 h-5" />, label: 'Settings' },
   ];
 
   return (
-    <aside className="bg-white w-64 min-h-screen border-r">
-      <nav className="mt-8">
-        <ul className="space-y-2">
-          {menuItems.map((item) => (
-            <li key={item.label}>
-              <a
-                href="#"
-                className={`flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 ${
-                  item.active ? 'bg-blue-50 text-blue-600' : ''
-                }`}
-              >
-                <item.icon className="h-5 w-5" />
-                <span className="ml-3">{item.label}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+    <div className="w-64 bg-white border-r h-screen sticky top-0">
+      <div className="flex items-center gap-2 px-6 py-4 border-b">
+        <Layout className="w-6 h-6 text-blue-600" />
+        <span className="font-semibold text-lg">AI Tutor</span>
+      </div>
+      
+      <nav className="p-4 space-y-2">
+        {navItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                isActive
+                  ? 'bg-blue-50 text-blue-600'
+                  : 'text-gray-600 hover:bg-gray-50'
+              }`
+            }
+          >
+            {item.icon}
+            <span>{item.label}</span>
+          </NavLink>
+        ))}
       </nav>
-    </aside>
+    </div>
   );
 };
 

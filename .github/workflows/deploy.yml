@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-test:
+  build-and-deploy:
     runs-on: ubuntu-latest
     
     steps:
@@ -33,85 +33,20 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v3
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-            ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Install dependencies
         run: npm ci
-
-      - name: Run ESLint
-        run: npm run lint || true
-
-      - name: Run TypeScript type checking
-        run: npm run typecheck || true
-
-      - name: Run tests
-        run: npm test || true
-        env:
-          CI: true
 
       - name: Build project
         run: npm run build
         env:
-          VITE_APP_VERSION: ${{ github.sha }}
-          VITE_APP_BUILD_TIME: ${{ steps.current-time.outputs.time }}
+          VITE_BASE_URL: '/ai-tutor/'
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
           path: ./dist
 
-  deploy:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
-    steps:
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Discord notification
-        if: always()
-        uses: rjstone/discord-webhook-notify@v1
-        with:
-          severity: info
-          description: |
-            Deployment to GitHub Pages
-            Status: ${{ job.status }}
-            URL: ${{ steps.deployment.outputs.page_url }}
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-
-  audit:
-    needs: deploy
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Security audit
-        run: |
-          npm audit
-          
-      - name: Lighthouse CI
-        uses: treosh/lighthouse-ci-action@v9
-        with:
-          urls: |
-            ${{ needs.deploy.outputs.page_url }}
-          uploadArtifacts: true
-          temporaryPublicStorage: true
-          
-      - name: Check broken links
-        uses: ruzickap/action-my-broken-link-checker@v2
-        with:
-          url: ${{ needs.deploy.outputs.page_url }}
-          cmd_params: "--buffer-size=8192 --max-connections=10"

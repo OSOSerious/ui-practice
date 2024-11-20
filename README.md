@@ -129,8 +129,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-For support, email support@aitutor.com or join our Slack channel.
+
 
 ---
 
-Made with ️ by OSOSerious
+
